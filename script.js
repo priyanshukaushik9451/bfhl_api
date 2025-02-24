@@ -1,4 +1,4 @@
-const apiUrl = "https://http://php-backend.kesug.com/index.php"; // Change this to your API URL after deployment
+const apiUrl = "https://php-backend.kesug.com/index.php"; // Change this to your API URL after deployment
 
 // Function to send data to PHP API
 function sendData() {
