@@ -1,6 +1,4 @@
-const apiUrl = window.location.protocol === 'https:' ? 
-    'https://php-backend.kesug.com/index.php' : 
-    'http://php-backend.kesug.com/index.php';
+const apiUrl = "https://php-backend.kesug.com/index.php";
 // Change this to your API URL after deployment
 
 // Function to send data to PHP API
