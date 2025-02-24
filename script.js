@@ -1,5 +1,5 @@
+// ✅ Correct API URL with HTTPS
 const apiUrl = "https://php-backend.kesug.com/index.php";
-// Change this to your API URL after deployment
 
 // Function to send data to PHP API
 function sendData() {
@@ -11,13 +11,20 @@ function sendData() {
     errorDiv.innerHTML = "";
 
     let jsonData;
+    
+    // ✅ Validate JSON Input
     try {
         jsonData = JSON.parse(inputField.value);
     } catch (error) {
         errorDiv.innerHTML = "Invalid JSON format!";
+        console.error("JSON Parse Error:", error);
         return;
     }
 
+    console.log("📤 Sending request to API:", apiUrl);
+    console.log("🔹 Request Data:", jsonData);
+
+    // ✅ Fetch request to PHP API
     fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -25,19 +32,29 @@ function sendData() {
         },
         body: JSON.stringify(jsonData)
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log("🔹 Raw Response:", response);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
     .then(data => {
+        console.log("✅ API Response:", data);
         displayResponse(data);
     })
     .catch(error => {
         errorDiv.innerHTML = "Error contacting API.";
+        console.error("❌ Fetch Error:", error);
     });
 }
 
-// Function to display response data
+// Function to display API response
 function displayResponse(data) {
     let outputDiv = document.getElementById("output");
-    
+
     outputDiv.innerHTML = `
         <p><strong>User ID:</strong> ${data.user_id}</p>
         <p><strong>Email:</strong> ${data.email}</p>
@@ -46,30 +63,4 @@ function displayResponse(data) {
         <p><strong>Alphabets:</strong> ${JSON.stringify(data.alphabets)}</p>
         <p><strong>Highest Alphabet:</strong> ${JSON.stringify(data.highest_alphabet)}</p>
     `;
-}
-
-// Function to filter displayed response
-function filterResponse() {
-    let filterValue = document.getElementById("filterDropdown").value;
-    let responseDiv = document.getElementById("output");
-    
-    let responseData = JSON.parse(sessionStorage.getItem("lastResponse"));
-    
-    if (!responseData) return;
-
-    let filteredOutput = `<p><strong>User ID:</strong> ${responseData.user_id}</p>`;
-    
-    if (filterValue === "all" || filterValue === "numbers") {
-        filteredOutput += `<p><strong>Numbers:</strong> ${JSON.stringify(responseData.numbers)}</p>`;
-    }
-    
-    if (filterValue === "all" || filterValue === "alphabets") {
-        filteredOutput += `<p><strong>Alphabets:</strong> ${JSON.stringify(responseData.alphabets)}</p>`;
-    }
-    
-    if (filterValue === "all" || filterValue === "highest_alphabet") {
-        filteredOutput += `<p><strong>Highest Alphabet:</strong> ${JSON.stringify(responseData.highest_alphabet)}</p>`;
-    }
-
-    responseDiv.innerHTML = filteredOutput;
 }
